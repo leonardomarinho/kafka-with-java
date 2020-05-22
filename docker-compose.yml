@@ -1,0 +1,32 @@
+version: "3"
+services:
+  kafka-with-java:
+    image: marinho/kafka-with-java:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zookeeper
+      - kafka
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS:
+        "INTERNAL://kafka:9090,\
+         EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS:
+        "INTERNAL://kafka:9090,\
+         EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:
+        "INTERNAL:PLAINTEXT,\
+         EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CREATE_TOPICS: "myTopic:1:1,myTopic2:1:1:compact"
