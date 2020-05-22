@@ -4,6 +4,7 @@ import com.marinho.kafkawithjava.consumer.MyTopicConsumer;
 import com.marinho.kafkawithjava.model.SimpleMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -26,9 +27,9 @@ public class KafkaController {
     private String DEFAULT_TOPIC;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SimpleMessage> sendSimpleMessage(@Valid @RequestBody SimpleMessage simpleMessage) {
+    public ResponseEntity sendSimpleMessage(@Valid @RequestBody SimpleMessage simpleMessage) {
         kafkaTemplate.send(DEFAULT_TOPIC, simpleMessage);
-        return ResponseEntity.ok(simpleMessage);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
