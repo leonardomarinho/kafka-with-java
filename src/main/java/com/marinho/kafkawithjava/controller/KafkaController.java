@@ -2,12 +2,12 @@ package com.marinho.kafkawithjava.controller;
 
 import com.marinho.kafkawithjava.consumer.MyTopicConsumer;
 import com.marinho.kafkawithjava.model.SimpleMessage;
+import com.marinho.kafkawithjava.producer.MyTopicProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,7 +18,7 @@ import java.util.List;
 public class KafkaController {
 
     @Autowired
-    private KafkaTemplate<String, SimpleMessage> kafkaTemplate;
+    private MyTopicProducer myTopicProducer;
 
     @Autowired
     private MyTopicConsumer myTopicConsumer;
@@ -28,7 +28,7 @@ public class KafkaController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity sendSimpleMessage(@Valid @RequestBody SimpleMessage simpleMessage) {
-        kafkaTemplate.send(DEFAULT_TOPIC, simpleMessage);
+        myTopicProducer.send(DEFAULT_TOPIC, simpleMessage);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -36,4 +36,5 @@ public class KafkaController {
     public List<SimpleMessage> getSimpleMessages(){
         return myTopicConsumer.getSimpleMessages();
     }
+
 }
